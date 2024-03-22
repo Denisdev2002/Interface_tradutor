@@ -16,19 +16,19 @@
     </select>
   </div>
   <div>
-    <button  class="btn btn-primary btn-margin" @click="traduzir">
+    <button  class="btn btn-primary btn-margin" @click="traduzir()">
       Enviar
     </button>
   </div>
-  <div>
-    <translated_text :translated_text="translated_text.vue"/>
+  <div class="resposta">
+      <p>{{ translation }}</p>
   </div>
   
 </div>
 </template>
 
 <script>
-import { createApp } from 'vue';
+import { createApp, onMounted } from 'vue';
 import axios from 'axios';
 import translated_text from './components/translated_text.vue';
 
@@ -40,6 +40,7 @@ export default {
   name: 'app',
   data() {
     return {
+      translation:'',
       text:'',
       selectedOption1: '',
       selectedOption2: '',
@@ -52,13 +53,14 @@ export default {
         {value:'no', label:'Norueguês'},
         {value:'ru', label:'Russo'},
         {value:'pl', label:'Polonês'},
+        {value:'su', label:'Suêco'}
       ]
     };
     
   },
 
   methods:{
-      traduzir(){
+     async traduzir(){
         // Verifica se os campos de texto e idioma estão preenchidos
         if (!this.text || !this.selectedOption1 || !this.selectedOption2) {
           alert('Por favor, preencha todos os campos.');
@@ -69,10 +71,12 @@ export default {
         language: this.selectedOption1,
         target_language: this.selectedOption2
         
-      })  
+      })
       .then(response => {
-        console.log(this.text, this.language, this.language);
-        console.log(response.data);
+        console.log(this.text, this.selectedOption1, this.selectedOption2);
+        var respon = response.data
+        console.log(respon);
+        this.translation = respon.translated_text;
         alert('Enviado com sucesso');
       })
       .catch(error => {
@@ -111,4 +115,14 @@ button {
   border-radius: 2cap;
   font-style: oblique;
 }
+p{
+  border: 2px solid #302a2a;
+  padding: 20px;
+  margin: 25px auto;
+  background-color: #fcf8f8;
+  grid-template-columns: auto 3fr auto auto; /* Define a estrutura de grid */
+  align-items: center;
+  
+}
+
 </style>
